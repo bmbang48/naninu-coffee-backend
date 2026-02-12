@@ -43,7 +43,7 @@ class ProductController extends Controller
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $image->storeAs('public/products', $image->hashName());
+            $image->storeAs('products', $image->hashName(), 'public');
         }
 
         $product = Product::create([
@@ -55,6 +55,8 @@ class ProductController extends Controller
 
         return new ProductResource(true, 'Data Baru berhasil ditambahkan', $product);
     }
+
+
     /**
      * Display the specified resource.
      */
