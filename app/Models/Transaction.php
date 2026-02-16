@@ -21,6 +21,14 @@ class Transaction extends Model
         'change'
     ];
 
+    protected $casts = [
+        'total_price' => 'integer',
+        'pay' => 'integer',
+        'change' => 'integer',
+        'discount' => 'integer',
+        'tax' => 'integer'
+    ];
+
     // Relasi ke Product
     public function items()
     {

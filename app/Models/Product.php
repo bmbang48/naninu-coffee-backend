@@ -19,6 +19,12 @@ class Product extends Model
         'image'
     ];
 
+    protected $casts = [
+        'price' => 'integer'
+    ];
+
+
+
     public function recipe()
     {
         return $this->hasMany(RecipeProduct::class, 'id_product');
