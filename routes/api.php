@@ -13,4 +13,4 @@ Route::apiResource('/recipe-product', App\Http\Controllers\Api\RecipeProductCont
 Route::apiResource('/other-cost', App\Http\Controllers\Api\OtherCostsController::class);
 Route::apiResource('/transactions', App\Http\Controllers\Api\TransactionController::class);
 Route::get('/materials-all', [App\Http\Controllers\Api\MaterialController::class, 'allMaterials']);
-
+Route::get('/products-cashier', [App\Http\Controllers\Api\ProductController::class, 'productsCashier']);
