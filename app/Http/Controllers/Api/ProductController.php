@@ -23,10 +23,10 @@ class ProductController extends Controller
         return new ProductResource(true, 'List Data Produk', $products);
     }
 
-    public function productsCashier()
+    public function productsCashier(Request $request)
     {
-        $products = Product::latest()->paginate(6);
-
+        $products = Product::where('product_name', 'LIKE', "%{$request->search}%")
+            ->paginate(6);
         return new ProductResource(true, 'List Produk Kasir', $products);
     }
 
