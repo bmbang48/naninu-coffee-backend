@@ -19,6 +19,8 @@ return new class extends Migration
             $table->integer('tax')->default(0);
             $table->integer('discount')->default(0);
             $table->integer('total_price');
+            $table->string('order_method');
+            $table->string('payment_method');
             $table->integer('pay');
             $table->integer('change');
             $table->timestamps();

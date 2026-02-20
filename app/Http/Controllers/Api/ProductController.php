@@ -30,7 +30,7 @@ class ProductController extends Controller
         return new ProductResource(true, 'List Produk Kasir', $products);
     }
 
-    /**
+    /** 
      * Store a newly created resource in storage.
      */
     public function store(Request $request)

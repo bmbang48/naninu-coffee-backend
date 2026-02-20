@@ -17,6 +17,8 @@ class Transaction extends Model
         'tax',
         'discount',
         'total_price',
+        'order_method',
+        'payment_method',
         'pay',
         'change'
     ];

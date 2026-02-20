@@ -35,6 +35,8 @@ class TransactionController extends Controller
             'tax' => 'nullable|numeric|min:0',
             'discount' => 'nullable|numeric|min:0',
             'total_price' => 'required|numeric|min:0',
+            'order_method' => 'required|string',
+            'payment_method' => 'required|string',
             'pay' => 'required|numeric|min:0',
             'change' => 'required|numeric|min:0',
             'items' => 'required|array|min:1',
@@ -58,6 +60,8 @@ class TransactionController extends Controller
                 'tax' => $request->tax,
                 'discount' => $request->discount,
                 'total_price' => $request->total_price,
+                'order_method' => $request->order_method,
+                'payment_method' => $request->payment_method,
                 'pay' => $request->pay,
                 'change' => $request->change,
             ]);
