@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\api\UsersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -12,5 +13,16 @@ Route::apiResource('/products', App\Http\Controllers\Api\ProductController::clas
 Route::apiResource('/recipe-product', App\Http\Controllers\Api\RecipeProductController::class);
 Route::apiResource('/other-cost', App\Http\Controllers\Api\OtherCostsController::class);
 Route::apiResource('/transactions', App\Http\Controllers\Api\TransactionController::class);
+Route::apiResource('/users', App\Http\Controllers\api\UsersController::class);
+Route::post('/login', [UsersController::class, 'login']);
+Route::middleware('auth:sanctum')->post('/logout', function (Request $request) {
+    $request->user()->currentAccessToken()->delete();
+    return response()->json([
+        'message' => 'Logout success'
+    ]);
+});
+Route::middleware('auth:sanctum')->get('/me', function () {
+    return auth()->user();
+});
 Route::get('/materials-all', [App\Http\Controllers\Api\MaterialController::class, 'allMaterials']);
 Route::get('/products-cashier', [App\Http\Controllers\Api\ProductController::class, 'productsCashier']);
