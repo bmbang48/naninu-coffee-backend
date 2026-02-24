@@ -25,3 +25,4 @@ Route::middleware('auth:sanctum')->get('/me', function () {
 });
 Route::get('/materials-all', [App\Http\Controllers\Api\MaterialController::class, 'allMaterials']);
 Route::get('/products-cashier', [App\Http\Controllers\Api\ProductController::class, 'productsCashier']);
+Route::get('/products-all', [App\Http\Controllers\Api\ProductController::class, 'allProducts']);

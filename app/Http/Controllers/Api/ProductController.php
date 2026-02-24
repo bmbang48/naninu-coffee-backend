@@ -23,6 +23,13 @@ class ProductController extends Controller
         return new ProductResource(true, 'List Data Produk', $products);
     }
 
+    public function allProducts()
+    {
+        $products = Product::all();
+
+        return new ProductResource(true, 'List semua data produk', $products);
+    }
+
     public function productsCashier(Request $request)
     {
         $products = Product::where('product_name', 'LIKE', "%{$request->search}%")
