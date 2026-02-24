@@ -13,7 +13,7 @@ Route::apiResource('/products', App\Http\Controllers\Api\ProductController::clas
 Route::apiResource('/recipe-product', App\Http\Controllers\Api\RecipeProductController::class);
 Route::apiResource('/other-cost', App\Http\Controllers\Api\OtherCostsController::class);
 Route::apiResource('/transactions', App\Http\Controllers\Api\TransactionController::class);
-Route::apiResource('/users', App\Http\Controllers\api\UsersController::class);
+Route::apiResource('/users', App\Http\Controllers\Api\UsersController::class);
 Route::post('/login', [UsersController::class, 'login']);
 Route::middleware('auth:sanctum')->post('/logout', function (Request $request) {
     $request->user()->currentAccessToken()->delete();
