@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\api\UsersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,7 +13,7 @@ Route::apiResource('/recipe-product', App\Http\Controllers\Api\RecipeProductCont
 Route::apiResource('/other-cost', App\Http\Controllers\Api\OtherCostsController::class);
 Route::apiResource('/transactions', App\Http\Controllers\Api\TransactionController::class);
 Route::apiResource('/users', App\Http\Controllers\Api\UsersController::class);
-Route::post('/login', [UsersController::class, 'login']);
+Route::post('/login', [App\Http\Controllers\Api\UsersController::class, 'login']);
 Route::middleware('auth:sanctum')->post('/logout', function (Request $request) {
     $request->user()->currentAccessToken()->delete();
     return response()->json([
