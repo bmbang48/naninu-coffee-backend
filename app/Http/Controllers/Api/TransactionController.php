@@ -103,6 +103,34 @@ class TransactionController extends Controller
         return new TransactionResource(true, 'Detail Data Transaksi', $transaction);
     }
 
+    public function profitToday()
+    {
+        // 1. Hitung total profit hari ini
+        $totalProfit = Transaction::whereDate('transaction_date', today())->sum('total_price');
+
+        // 2. Ambil produk terlaris dengan join ke tabel products
+        $bestProduct = DB::table('transaction_items')
+            ->join('transactions', 'transactions.id', '=', 'transaction_items.transaction_id')
+            ->join('products', 'products.id', '=', 'transaction_items.product_id') // Join ke tabel products
+            ->whereDate('transactions.transaction_date', today())
+            ->select(
+                'products.product_name as product_name', // Ambil nama dari tabel products
+                DB::raw('SUM(transaction_items.quantity) as total_sold')
+            )
+            ->groupBy('products.id', 'products.product_name')
+            ->orderByDesc('total_sold')
+            ->first();
+
+        return response()->json([
+            'total_profit'  => (int) $totalProfit,
+            'best_product'  => $bestProduct ? $bestProduct->product_name : 'Belum ada penjualan',
+            'qty_sold'      => $bestProduct ? (int) $bestProduct->total_sold : 0
+        ]);
+    }
+
+
+
+
     /**
      * Show the form for editing the specified resource.
      */
