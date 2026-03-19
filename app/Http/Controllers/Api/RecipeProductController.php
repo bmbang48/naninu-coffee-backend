@@ -17,7 +17,7 @@ class RecipeProductController extends Controller
     public function index()
     {
         //
-        $recipe = RecipeProduct::with(['product', 'material'])->latest()->paginate(20);
+        $recipe = RecipeProduct::with(['product', 'material'])->latest()->get();
 
         return new RecipeProductResource(true, 'Menampilkan Data Resep', $recipe);
     }
@@ -123,5 +123,47 @@ class RecipeProductController extends Controller
         $recipe->delete();
 
         return new RecipeProductResource(true, 'Data Berhasil dihapus', null);
+    }
+
+    public function getByProduct(Request $request)
+    {
+
+        $search = strtolower(trim($request->search ?? ''));
+        $keywords = explode(' ', $search);
+
+        $product = Product::with('materials')->get()->first(function ($item) use ($keywords) {
+            $name = strtolower($item->product_name);
+
+            foreach ($keywords as $word) {
+                if (!str_contains($name, $word)) {
+                    return false;
+                }
+            }
+
+            return true;
+        });
+        // dd(Product::pluck('product_name'));
+
+        // dd($search, Product::pluck('product_name'));    
+        if (!$product) {
+            return response()->json([
+                'message' => 'Produk tidak ditemukan'
+            ], 404);
+        }
+        // dd($product->materials);
+
+        $materials = $product->materials->map(function ($material) {
+            return [
+                'name' => $material->name,
+                'amount' => $material->pivot->amount_used ?? 0,
+                'unit' => $material->unit,
+            ];
+        });
+
+
+        return response()->json([
+            'product' => $product->product_name,
+            'materials' => $materials
+        ]);
     }
 }

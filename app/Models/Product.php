@@ -24,6 +24,11 @@ class Product extends Model
     ];
 
 
+    public function materials()
+    {
+        return $this->belongsToMany(Material::class, 'recipe_products', 'id_product', 'id_material')
+            ->withPivot('amount_used');
+    }
 
     public function recipe()
     {

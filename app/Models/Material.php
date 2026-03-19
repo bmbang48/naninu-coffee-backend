@@ -22,4 +22,10 @@ class Material extends Model
     {
         return $this->hasMany(RecipeProduct::class, 'id_material');
     }
+
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'recipe_products', 'id_material', 'id_product')
+            ->withPivot('amount_used');
+    }
 }

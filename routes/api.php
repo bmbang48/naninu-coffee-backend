@@ -27,3 +27,4 @@ Route::get('/materials-all', [App\Http\Controllers\Api\MaterialController::class
 Route::get('/products-cashier', [App\Http\Controllers\Api\ProductController::class, 'productsCashier']);
 Route::get('/products-all', [App\Http\Controllers\Api\ProductController::class, 'allProducts']);
 Route::get('/transactions/profit/today', [App\Http\Controllers\Api\TransactionController::class, 'profitToday']);
+Route::get('/recipe-bot', [App\Http\Controllers\Api\RecipeProductController::class, 'getByProduct']);
