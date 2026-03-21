@@ -17,7 +17,7 @@ class TransactionController extends Controller
     public function index()
     {
         //
-        $transactions = Transaction::with('items.product')->latest()->paginate(10);
+        $transactions = Transaction::with('items.product')->latest()->get();
 
         return new TransactionResource(true, 'List Data Transaksi', $transactions);
     }
