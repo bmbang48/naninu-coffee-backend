@@ -17,7 +17,7 @@ class TransactionController extends Controller
     public function index()
     {
         //
-        $transactions = Transaction::with('items.product')->latest()->get();
+        $transactions = Transaction::with('items.product')->orderBy('transaction_date', 'desc')->get();
 
         return new TransactionResource(true, 'List Data Transaksi', $transactions);
     }
