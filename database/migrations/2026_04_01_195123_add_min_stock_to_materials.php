@@ -11,7 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('personal_access_tokens', function (Blueprint $table) {});
+        Schema::table('materials', function (Blueprint $table) {
+            //
+            $table->integer('min_stock')->default(0);
+        });
     }
 
     /**
@@ -19,6 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('personal_access_tokens');
+        Schema::table('materials', function (Blueprint $table) {
+            //
+        });
     }
 };

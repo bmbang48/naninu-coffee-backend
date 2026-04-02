@@ -5,12 +5,17 @@ namespace App\Http\Controllers\Api;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\CashFlow;
 use App\Http\Resources\TransactionResource;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use App\Services\HppService;
+use App\Services\MaterialStockService;
+
 
 class TransactionController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      */
@@ -28,6 +33,7 @@ class TransactionController extends Controller
     public function store(Request $request)
     {
         //
+
         $validator = Validator::make($request->all(), [
             'transaction_date' => 'required|string',
             'transaction_code' => 'required|string',
@@ -51,6 +57,10 @@ class TransactionController extends Controller
         }
 
         DB::beginTransaction();
+
+        $hppService = new HppService();
+        $stockService = new MaterialStockService();
+        $totalHpp = 0;
         try {
             //simpan data transaksi
             $transaction = Transaction::create([
@@ -67,14 +77,41 @@ class TransactionController extends Controller
             ]);
 
             foreach ($request->items as $item) {
+
+                $hpp = $hppService->calculate($item['product_id']);
+                $subtotalHpp = $hpp * $item['quantity'];
+
+                $totalHpp += $subtotalHpp;
+
+                // ✅ 1. simpan item dulu
                 $transaction->items()->create([
                     'product_id' => $item['product_id'],
                     'quantity' => $item['quantity'],
+                    'hpp' => $hpp,
+                    'subtotal_hpp' => $subtotalHpp,
                     'price' => $item['price'],
                     'subtotal' => $item['subtotal'],
                 ]);
-            }
 
+                // ✅ 2. baru reduce stock
+                $stockService->reduceStock(
+                    $item['product_id'],
+                    $item['quantity'],
+                    $transaction->transaction_code,
+                );
+            }
+            $transaction->update([
+                'total_hpp' => $totalHpp,
+                'total_profit' => $transaction->total_price - $totalHpp
+            ]);
+
+            CashFlow::create([
+                'type' => 'IN',
+                'amount' => $transaction->total_price,
+                'category' => 'transaction',
+                'note' => 'Transaction ' . $transaction->transaction_code,
+                'date' => now()
+            ]);
             DB::commit();
 
             return response()->json([
@@ -83,8 +120,7 @@ class TransactionController extends Controller
                 'data' => $transaction->load('items'),
             ], 201);
         } catch (\Exception $e) {
-            DB::rollback();
-            return response()->json(['error' => $e->getMessage()], 500);
+            dd($e->getMessage(), $e->getLine());
         }
     }
 

@@ -20,7 +20,9 @@ class Transaction extends Model
         'order_method',
         'payment_method',
         'pay',
-        'change'
+        'change',
+        'total_hpp',
+        'total_profit'
     ];
 
     protected $casts = [
@@ -34,6 +36,6 @@ class Transaction extends Model
     // Relasi ke Product
     public function items()
     {
-        return $this->hasMany(Transaction_items::class, 'transaction_id');
+        return $this->hasMany(TransactionItems::class, 'transaction_id');
     }
 }

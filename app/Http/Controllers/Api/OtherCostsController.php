@@ -29,7 +29,7 @@ class OtherCostsController extends Controller
         //
         $validator = Validator::make($request->all(), [
             'name_cost' => 'required',
-            'cost_per_product' => 'required'
+            'amount' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -38,7 +38,7 @@ class OtherCostsController extends Controller
 
         $otherCost = OtherCosts::create([
             'name_cost' => $request->name_cost,
-            'cost_per_product' => $request->cost_per_product
+            'amount' => $request->amount
         ]);
 
         return new OtherCostResource(true, 'Data baru berhasil ditambahkan', $otherCost);
@@ -67,7 +67,7 @@ class OtherCostsController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name_cost' => 'required',
-            'cost_per_product' => 'required'
+            'amount' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -76,7 +76,7 @@ class OtherCostsController extends Controller
 
         $otherCost->update([
             'name_cost' => $request->name_cost,
-            'cost_per_product' => $request->cost_per_product,
+            'amount' => $request->amount,
         ]);
 
         return new OtherCostResource(true, 'Data Berhasil Diubah', $otherCost);

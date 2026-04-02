@@ -12,6 +12,6 @@ class OtherCosts extends Model
 
     protected $fillable = [
         'name_cost',
-        'cost_per_product'
+        'amount'
     ];
 }

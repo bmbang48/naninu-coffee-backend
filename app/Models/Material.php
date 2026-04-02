@@ -15,7 +15,9 @@ class Material extends Model
         'name',
         'unit',
         'price',
-        'amount'
+        'amount',
+        'stock',
+        'min_stock'
     ];
 
     public function recipe()
@@ -27,5 +29,10 @@ class Material extends Model
     {
         return $this->belongsToMany(Product::class, 'recipe_products', 'id_material', 'id_product')
             ->withPivot('amount_used');
+    }
+
+    public function logs()
+    {
+        return $this->hasMany(MaterialLog::class);
     }
 }

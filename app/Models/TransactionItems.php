@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Transaction_items extends Model
+class TransactionItems extends Model
 {
     //
     protected $fillable = [
@@ -12,7 +12,9 @@ class Transaction_items extends Model
         'product_id',
         'quantity',
         'price',
-        'subtotal'
+        'subtotal',
+        'hpp',
+        'subtotal_hpp'
     ];
 
     protected $casts = [
