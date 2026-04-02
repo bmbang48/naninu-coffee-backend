@@ -49,3 +49,8 @@ Route::get('/run-migrate', function () {
     Artisan::call('migrate', ['--force' => true]);
     return 'Migration success';
 });
+
+Route::get('/clear-cache', function () {
+    Artisan::call('optimize:clear');
+    return 'Cache cleared';
+});
