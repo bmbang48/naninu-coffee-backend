@@ -12,9 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('transactions', function (Blueprint $table) {
-            //
-            $table->string('order_method')->nullable()->after('total_price');
-            $table->string('payment_method')->nullable()->after('order_method');
+            if (!Schema::hasColumn('transactions', 'order_method')) {
+                $table->string('order_method')->nullable()->after('total_price');
+            }
+
+            if (!Schema::hasColumn('transactions', 'payment_method')) {
+                $table->string('payment_method')->nullable()->after('payment_method');
+            }
         });
     }
 
