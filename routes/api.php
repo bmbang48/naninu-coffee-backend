@@ -44,3 +44,8 @@ Route::get('/cashflows-summary', [CashFlowController::class, 'summary']);
 Route::get('/cashflows-chart', [CashFlowController::class, 'chart']);
 //SSO
 Route::get('/sso-login', [App\Http\COntrollers\Api\AuthController::class, 'ssoLogin']);
+
+Route::get('/run-migrate', function () {
+    Artisan::call('migrate', ['--force' => true]);
+    return 'Migration success';
+});
