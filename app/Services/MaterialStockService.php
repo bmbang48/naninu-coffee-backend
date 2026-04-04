@@ -14,6 +14,8 @@ class MaterialStockService
             ->where('id_product', $productId)
             ->get();
 
+        $errors = [];
+
         foreach ($recipes as $recipe) {
 
             if (!$recipe->material) continue;
@@ -24,12 +26,26 @@ class MaterialStockService
             $used = $recipe->amount_used * $qty;
 
 
-
             if ($material->stock < $used) {
-                throw new \Exception("Stock {$material->name} tidak cukup");
+                $errors[] = [
+                    'name' => $material->name,
+                    'stock' => $material->stock,
+                    'needed' => $used,
+                ];
             }
+        }
 
-            // 🔥 update stock
+        if (!empty($errors)) {
+            throw new \Exception(json_encode($errors));
+        }
+
+        // 🔥 update stock
+        foreach ($recipes as $recipe) {
+            if (!$recipe->material) continue;
+
+            $material = $recipe->material;
+
+            $used = $recipe->amount_used * $qty;
             $material->stock -= $used;
             $material->save();
 

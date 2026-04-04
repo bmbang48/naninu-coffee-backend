@@ -78,12 +78,20 @@ class TransactionController extends Controller
 
             foreach ($request->items as $item) {
 
+                // 🔥 1. VALIDASI STOCK DULU
+                $stockService->reduceStock(
+                    $item['product_id'],
+                    $item['quantity'],
+                    $transaction->transaction_code,
+                );
+
+                // 🔥 2. HITUNG HPP
                 $hpp = $hppService->calculate($item['product_id']);
                 $subtotalHpp = $hpp * $item['quantity'];
 
                 $totalHpp += $subtotalHpp;
 
-                // ✅ 1. simpan item dulu
+                // 🔥 3. BARU SIMPAN ITEM
                 $transaction->items()->create([
                     'product_id' => $item['product_id'],
                     'quantity' => $item['quantity'],
@@ -92,13 +100,6 @@ class TransactionController extends Controller
                     'price' => $item['price'],
                     'subtotal' => $item['subtotal'],
                 ]);
-
-                // ✅ 2. baru reduce stock
-                $stockService->reduceStock(
-                    $item['product_id'],
-                    $item['quantity'],
-                    $transaction->transaction_code,
-                );
             }
             $transaction->update([
                 'total_hpp' => $totalHpp,
@@ -120,7 +121,15 @@ class TransactionController extends Controller
                 'data' => $transaction->load('items'),
             ], 201);
         } catch (\Exception $e) {
-            dd($e->getMessage(), $e->getLine());
+            DB::rollBack();
+
+            $decoded = json_decode($e->getMessage(), true);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Stock tidak cukup',
+                'errors' => $decoded ?? [$e->getMessage()]
+            ], 400);
         }
     }
 
