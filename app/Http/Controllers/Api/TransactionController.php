@@ -185,7 +185,7 @@ class TransactionController extends Controller
             'best_product'  => $bestProduct ? $bestProduct->product_name : 'Belum ada penjualan',
             'qty_sold'      => $bestProduct ? (int) $bestProduct->total_sold : 0,
             'qty_today'      => $qtyToday,
-            'date'          => $date
+            'date'          => $date ? $date : today()
         ]);
     }
 
