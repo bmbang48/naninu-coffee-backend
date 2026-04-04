@@ -33,8 +33,7 @@ class TransactionController extends Controller
     public function store(Request $request)
     {
         //
-
-        $validator = Validator::make($request->all(), [
+        $rules = [
             'transaction_date' => 'required|string',
             'transaction_code' => 'required|string',
             'customer_name' => 'required|string',
@@ -43,14 +42,23 @@ class TransactionController extends Controller
             'total_price' => 'required|numeric|min:0',
             'order_method' => 'required|string',
             'payment_method' => 'required|string',
-            'pay' => 'required|numeric|min:0',
-            'change' => 'required|numeric|min:0',
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'required|exists:products,id',
             'items.*.quantity' => 'required|integer|min:1',
             'items.*.price' => 'required|numeric|min:0',
             'items.*.subtotal' => 'required|numeric|min:0',
-        ]);
+        ];
+
+        // 🔥 dynamic rules
+        if ($request->payment_method === 'Cash') {
+            $rules['pay'] = 'required|numeric|min:0';
+            $rules['change'] = 'required|numeric|min:0';
+        } else {
+            $rules['pay'] = 'nullable|numeric|min:0';
+            $rules['change'] = 'nullable|numeric|min:0';
+        }
+
+        $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
@@ -151,7 +159,12 @@ class TransactionController extends Controller
     public function profitToday()
     {
         // 1. Hitung total profit hari ini
-        $totalProfit = Transaction::whereDate('transaction_date', today())->sum('total_price');
+        $date = Transaction::whereDate('transaction_date', today())->select('transaction_date')->first();
+        $totalPrice = Transaction::whereDate('transaction_date', today())->sum('total_price');
+        $totalProfit = Transaction::whereDate('transaction_date', today())->sum('total_profit');
+        $qtyToday = DB::table('transaction_items')
+            ->join('transactions', 'transactions.id', '=', 'transaction_items.transaction_id')
+            ->whereDate('transaction_date', today())->sum('quantity');
 
         // 2. Ambil produk terlaris dengan join ke tabel products
         $bestProduct = DB::table('transaction_items')
@@ -168,8 +181,11 @@ class TransactionController extends Controller
 
         return response()->json([
             'total_profit'  => (int) $totalProfit,
+            'total_price'  => (int) $totalPrice,
             'best_product'  => $bestProduct ? $bestProduct->product_name : 'Belum ada penjualan',
-            'qty_sold'      => $bestProduct ? (int) $bestProduct->total_sold : 0
+            'qty_sold'      => $bestProduct ? (int) $bestProduct->total_sold : 0,
+            'qty_today'      => $qtyToday,
+            'date'          => $date
         ]);
     }
 

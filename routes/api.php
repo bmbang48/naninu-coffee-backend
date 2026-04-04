@@ -36,6 +36,7 @@ Route::post('/materials/restock', [MaterialController::class, 'restock']);
 Route::post('/materials/adjust', [MaterialController::class, 'adjustStock']);
 Route::get('/material-logs', [MaterialController::class, 'logs']);
 Route::get('/dashboard', [MaterialController::class, 'dashboard']);
+Route::get('/low-stock', [MaterialCOntroller::class, 'lowstock']);
 Route::get('/cashflow', [DashboardController::class, 'cashflow']);
 
 Route::get('/cashflows', [CashFlowController::class, 'index']);
@@ -44,13 +45,3 @@ Route::get('/cashflows-summary', [CashFlowController::class, 'summary']);
 Route::get('/cashflows-chart', [CashFlowController::class, 'chart']);
 //SSO
 Route::get('/sso-login', [App\Http\COntrollers\Api\AuthController::class, 'ssoLogin']);
-
-Route::get('/run-migrate', function () {
-    Artisan::call('migrate', ['--force' => true]);
-    return 'Migration success';
-});
-
-Route::get('/clear-cache', function () {
-    Artisan::call('optimize:clear');
-    return 'Cache cleared';
-});

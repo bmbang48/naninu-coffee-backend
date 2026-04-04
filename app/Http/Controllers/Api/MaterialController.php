@@ -235,4 +235,11 @@ class MaterialController extends Controller
             'most_used' => $mostUsed
         ]);
     }
+
+    public function lowstock()
+    {
+        $materials = Material::whereColumn('stock', '<', 'min_stock')->get();
+
+        return response()->json($materials);
+    }
 }
